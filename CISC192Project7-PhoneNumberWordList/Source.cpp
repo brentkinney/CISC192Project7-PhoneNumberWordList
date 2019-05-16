@@ -10,6 +10,7 @@
 #include <numeric>
 #include <ctime>
 #include <fstream>
+#include <array>
 using namespace std;
 
 class PhoneNumberNumerator
@@ -24,16 +25,22 @@ public:
 
 	string getLettersForNumber(char digit)
 	{
-		string[] table = { "", "", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ" };
+		vector<string> table = { "", "", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ" };
 		bool valid = ((digit >= '0') && (digit <= '9'));
-		return valid ? table[digit - '0'] : "";
+		return valid ? table[digit - '0'] : table[1];
 	}
 
 	void printAllWordsFromPrefixAndPhoneNumber(string prefix, string remaining)
 	{
-		if ((remaining == null) || (remaining.length() == 0))
+		if ((remaining == "") || (remaining.length() == 0))
 		{
+			ofstream phoneNumOutput;
+			phoneNumOutput.open("phoneNumOutput.txt");
+			phoneNumOutput << prefix;
+			phoneNumOutput.close();
+
 			cout << prefix;
+			//cout << "\n\nFor phone number " << remaining << " there are " << prefix.size() << " possible words." << endl;
 		}
 		else
 		{
@@ -44,7 +51,7 @@ public:
 
 				for (int i = 0; i < chars_in_digit.length(); i++)
 				{
-					string newprefix = prefix + chars_in_digit.at(i);
+					string newprefix = " " + prefix + chars_in_digit.at(i);
 					string newremaining = remaining.substr(1);
 					printAllWordsFromPrefixAndPhoneNumber(newprefix, newremaining);
 				}
@@ -98,9 +105,10 @@ int main()
 {
 	char choice = 'y';
 	string phoneGiven;
+	string wordList;
 	vector<char> phoneNum = {};
 	int i = 0;
-	vector<string> wordList = {};
+	//vector<string> numeratedList = {};
 
 
 	do
@@ -115,18 +123,21 @@ int main()
 			return main();
 		}
 
+		PhoneNumberNumerator numerator1;
+		numerator1.printAllWordsFromPrefixAndPhoneNumber(wordList, phoneGiven);
+
 		//copy contents of string to vector
-		vector<char> phoneNum(phoneGiven.begin(), phoneGiven.end());
+		//vector<string> numeratedList(wordList.begin(), wordList.end());
 
 
 
 		//print through each word in vector list after our function is performed
-		for (vector<string>::const_iterator i = wordList.begin(); i != wordList.end(); i++)
-			cout << *i << " ";
+		//for (vector<string>::const_iterator i = wordList.begin(); i != wordList.end(); i++)
+			//cout << *i << " ";
 
 
 		//print line showing how many words were found for the given number
-		cout << "For phone number " << phoneGiven << " there are " << wordList.size() << " possible words." << endl;
+		//cout << "\n\nFor phone number " << phoneGiven << " there are " << wordList.size() << " possible words." << endl;
 
 		//see if the user wants to continue and continue if desired
 		cout << "\n\nWould you like to check another phone number? (Y/N): ";
