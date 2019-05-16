@@ -36,7 +36,7 @@ public:
 		{
 			ofstream phoneNumOutput;
 			phoneNumOutput.open("phoneNumOutput.txt");
-			phoneNumOutput << prefix;
+			phoneNumOutput << "\n" + prefix + "\n";
 			phoneNumOutput.close();
 
 			cout << prefix;
