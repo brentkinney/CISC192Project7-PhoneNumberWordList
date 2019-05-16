@@ -11,12 +11,17 @@
 #include <ctime>
 #include <fstream>
 #include <array>
+#include <iterator>
+#include <list>
 using namespace std;
 
 class PhoneNumberNumerator
 {
+private:
+	vector<string> numeratorList;
+
 public:
-	vector<char> numeratorList;
+
 
 	void printAllWordsFromPhoneNumber(string phonenumber)
 	{
@@ -34,13 +39,7 @@ public:
 	{
 		if ((remaining == "") || (remaining.length() == 0))
 		{
-			ofstream phoneNumOutput;
-			phoneNumOutput.open("phoneNumOutput.txt");
-			phoneNumOutput << "\n" + prefix + "\n";
-			phoneNumOutput.close();
-
-			cout << prefix;
-			//cout << "\n\nFor phone number " << remaining << " there are " << prefix.size() << " possible words." << endl;
+			numeratorList.push_back(prefix);
 		}
 		else
 		{
@@ -62,53 +61,80 @@ public:
 				string newremaining = remaining.substr(1);
 				printAllWordsFromPrefixAndPhoneNumber(newprefix, newremaining);
 			}
+		}
+	}
+
+	int writeFile(string phonenum)
+	{
+		ofstream phoneNumOutput;
+		phoneNumOutput.open("phoneNumOutput.txt");
+		for (int i = 0; i < numeratorList.size(); i++)
+		{
+
+			if (i % 4 == 0) {
+				phoneNumOutput << "\n";
+			}
+			if (i < 10)
+			{
+				phoneNumOutput << (i + 1) << ".  " << numeratorList[i] << " ";
+			}
+			else
+			{
+				phoneNumOutput << (i + 1) << ". " << numeratorList[i] << " ";
+			}
+
+		}
+		if (numeratorList.size() == 1) {
+			phoneNumOutput << "\n\nFor phone number " << phonenum << " there is " << numeratorList.size() << " possible word." << endl;
+		}
+		else {
+			phoneNumOutput << "\n\nFor phone number " << phonenum << " there are " << numeratorList.size() << " possible words." << endl;
+		}
+		phoneNumOutput.close();
+		return 0;
+	}
+
+	void printList(string phonenum)
+	{
+		for (int i = 0; i < numeratorList.size(); i++)
+		{
+
+			if (i % 4 == 0) {
+				cout << "\n";
+			}
+
+			if (i < 10)
+			{
+				cout << (i + 1) << "." << numeratorList[i] << " ";
+			}
+			else
+			{
+				cout << " " << "\b\b" << (i + 1) << "." << numeratorList[i] << "  ";
+			}
+
 
 
 		}
+
+
+		if (numeratorList.size() == 1)
+			cout << "\n\nFor phone number " << phonenum << " there is " << numeratorList.size() << " possible word." << endl;
+		else
+			cout << "\n\nFor phone number " << phonenum << " there are " << numeratorList.size() << " possible words." << endl;
+
 	}
+
+
 };
 
-//method to write to file
-int writeFile()
-{
-	ofstream phoneNumOutput;
-	phoneNumOutput.open("phoneNumOutput.txt");
-	phoneNumOutput << "Writing this to a file.\n";
-	phoneNumOutput << "Writing this to a file.\n";
-	phoneNumOutput << "Writing this to a file.\n";
-	phoneNumOutput << "Writing this to a file.\n";
-	phoneNumOutput.close();
-	return 0;
-}
-
-//another method to write to file
-int writeToFile()
-{
-	ofstream myfile("phoneNumOutput.txt");
-
-	if (myfile.is_open())
-	{
-		string str;
-		do {
-			getline(cin, str);
-			myfile << str << endl;
-		} while (str != "");
-		myfile.close();
-	}
-	else cerr << "Unable to open file";
-
-	return 0;
-}
 
 
+//main function that implements the class
 int main()
 {
 	char choice = 'y';
 	string phoneGiven;
 	string wordList;
-	vector<char> phoneNum = {};
-	int i = 0;
-	//vector<string> numeratedList = {};
 
 
 	do
@@ -125,19 +151,9 @@ int main()
 
 		PhoneNumberNumerator numerator1;
 		numerator1.printAllWordsFromPrefixAndPhoneNumber(wordList, phoneGiven);
+		numerator1.writeFile(phoneGiven);
+		numerator1.printList(phoneGiven);
 
-		//copy contents of string to vector
-		//vector<string> numeratedList(wordList.begin(), wordList.end());
-
-
-
-		//print through each word in vector list after our function is performed
-		//for (vector<string>::const_iterator i = wordList.begin(); i != wordList.end(); i++)
-			//cout << *i << " ";
-
-
-		//print line showing how many words were found for the given number
-		//cout << "\n\nFor phone number " << phoneGiven << " there are " << wordList.size() << " possible words." << endl;
 
 		//see if the user wants to continue and continue if desired
 		cout << "\n\nWould you like to check another phone number? (Y/N): ";
